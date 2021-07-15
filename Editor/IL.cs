@@ -34,14 +34,16 @@ public static class Run
                         var processor = method.Body.GetILProcessor();
                         //var action = assembly.MainModule.ImportReference(typeof(Debug).GetMethod("Log", new Type[] { typeof(object) }));
                         ////var baseIns = assembly.MainModule.ImportReference();
-                        
-                        var Ins = assembly.MainModule.GetType("EventCenter").BaseType.Resolve().Properties.First((x) =>
-                        {
-                            return x.Name == "Instance";
-                        });
+
+                        var it = typeof(EventCenter).GetProperty("Instance", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.FlattenHierarchy|System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+                        //var Ins = assembly.MainModule.GetType("EventCenter").BaseType.Resolve().Properties.First((x) =>
+                        //{
+                        //    return x.Name == "Instance";
+                        //});
+                        var Ins = assembly.MainModule.ImportReference(it.GetGetMethod());
                         //processor.InsertBefore(insertPoint, processor.Create(OpCodes.Ldstr, "IL Inject"));
                         //processor.InsertBefore(insertPoint, processor.Create(OpCodes.Call, action)); 
-                        processor.InsertBefore(insertPoint, processor.Create(OpCodes.Call, Ins.GetMethod));
+                        processor.InsertBefore(insertPoint, processor.Create(OpCodes.Call, Ins));
                         processor.InsertBefore(insertPoint, processor.Create(OpCodes.Ldc_I4_0));
                         processor.InsertBefore(insertPoint, processor.Create(OpCodes.Box,assembly.MainModule.GetType("GG").GetElementType()));
                         foreach (var item in assembly.Modules)

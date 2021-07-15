@@ -173,6 +173,7 @@ public class EventCenter : SingaltonInstance<EventCenter>
     public void EventTrigger<T>(string eventName, T value)
     {
         (eventToInfo?[eventName][typeof(T)] as EventInfo<T>)?.Invoke(value);
+
     }
 
     public void EventTrigger(string eventName)
